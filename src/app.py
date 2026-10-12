@@ -19,27 +19,53 @@ current_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
           "static")), name="static")
 
-# In-memory activity database
-activities = {
-    "Chess Club": {
-        "description": "Learn strategies and compete in chess tournaments",
-        "schedule": "Fridays, 3:30 PM - 5:00 PM",
-        "max_participants": 12,
-        "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
+if "activities" not in globals():
+    activities = {}
+
+activities.update({
+    "Basketball Team": {
+        "name": "Basketball Team",
+        "description": "Practice shooting, passing, and game strategy with the school team.",
+        "schedule": "Mondays and Thursdays at 5:00 PM",
+        "participants": [],
+        "category": "Sports",
     },
-    "Programming Class": {
-        "description": "Learn programming fundamentals and build software projects",
-        "schedule": "Tuesdays and Thursdays, 3:30 PM - 4:30 PM",
-        "max_participants": 20,
-        "participants": ["emma@mergington.edu", "sophia@mergington.edu"]
+    "Volleyball Club": {
+        "name": "Volleyball Club",
+        "description": "Build teamwork and endurance through friendly matches and drills.",
+        "schedule": "Tuesdays and Fridays at 4:30 PM",
+        "participants": [],
+        "category": "Sports",
     },
-    "Gym Class": {
-        "description": "Physical education and sports activities",
-        "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
-        "max_participants": 30,
-        "participants": ["john@mergington.edu", "olivia@mergington.edu"]
-    }
-}
+    "Drama Club": {
+        "name": "Drama Club",
+        "description": "Explore acting, improvisation, and stage performance in a welcoming group.",
+        "schedule": "Wednesdays at 3:30 PM",
+        "participants": [],
+        "category": "Artistic",
+    },
+    "Art Studio": {
+        "name": "Art Studio",
+        "description": "Create paintings, sketches, and mixed-media projects with peers.",
+        "schedule": "Thursdays at 4:00 PM",
+        "participants": [],
+        "category": "Artistic",
+    },
+    "Math Olympiad": {
+        "name": "Math Olympiad",
+        "description": "Solve advanced problem sets and compete in challenging math events.",
+        "schedule": "Tuesdays at 5:00 PM",
+        "participants": [],
+        "category": "Intellectual",
+    },
+    "Debate Team": {
+        "name": "Debate Team",
+        "description": "Develop argumentation, research, and public speaking skills.",
+        "schedule": "Fridays at 3:45 PM",
+        "participants": [],
+        "category": "Intellectual",
+    },
+})
 
 
 @app.get("/")
@@ -61,6 +87,11 @@ def signup_for_activity(activity_name: str, email: str):
 
     # Get the specific activity
     activity = activities[activity_name]
+
+# Validate student is not already signed up
+ # Validate student is not already signed up
+   if email in activity["participants"]:
+     raise HTTPException(status_code=400, detail="Student is already signed up")
 
     # Add student
     activity["participants"].append(email)
